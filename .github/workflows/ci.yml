@@ -2,32 +2,91 @@ name: CI
 
 on:
   push:
-    branches: [main, master]
+    branches: ["**"]
   pull_request:
     branches: [main, master]
 
 jobs:
-  test-skills:
+  # ── Hardhat Contract Tests ─────────────────────────────────────────────────
+  contracts:
+    name: Hardhat (Contracts)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: contracts
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: contracts/package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Compile contracts
+        run: npm run compile
+
+      - name: Run contract tests
+        run: npm test
+
+  # ── Vitest Skills Tests ────────────────────────────────────────────────────
+  skills:
     name: Vitest (Skills)
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: npm
-      - run: npm ci
-      - run: npm run test:skills
 
-  test-contracts:
-    name: Foundry (Contracts)
-    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          submodules: recursive
-      - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1
-      - name: Run forge test
-        working-directory: contracts
-        run: forge test -vvv
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+
+      - name: Install root dependencies
+        run: npm install
+
+      - name: Generate Prisma client
+        run: npx prisma generate --schema=db/schema.prisma
+
+      - name: Run skill tests
+        run: npm run test:skills
+        env:
+          PHAROS_RPC_URL: https://atlantic.dplabs-internal.com
+          PHAROS_CHAIN_ID: "688689"
+          OLLAMA_HOST: http://localhost:11434
+          OLLAMA_MODEL: mistral:7b
+          SENTIMENT_SERVICE_URL: http://localhost:9001
+          FORECAST_SERVICE_URL: http://localhost:9002
+          RL_POLICY_SERVICE_URL: http://localhost:9003
+          COINGECKO_API_URL: https://api.coingecko.com/api/v3
+
+  # ── TypeScript Build ───────────────────────────────────────────────────────
+  build:
+    name: TypeScript Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate Prisma client
+        run: npx prisma generate --schema=db/schema.prisma
+
+      - name: Build TypeScript
+        run: npm run build
