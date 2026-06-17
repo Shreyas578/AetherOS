@@ -1,0 +1,22 @@
+{
+  "name": "@aetheros/llm-reasoning",
+  "version": "1.0.0",
+  "description": "Local Gemma:2b reasoning via Ollama with JSON-mode output, auto-retry on parse failure, and persona prompt templates",
+  "author": "AetherOS Team",
+  "inputs": {
+    "prompt": { "type": "string", "description": "Prompt text", "required": true },
+    "outputSchema": { "type": "object", "description": "Expected JSON output schema", "required": true }
+  },
+  "outputs": {
+    "data": { "type": "object", "description": "Parsed JSON response" },
+    "latencyMs": { "type": "number", "description": "Inference latency in milliseconds" },
+    "retried": { "type": "boolean", "description": "Whether a retry was needed" }
+  },
+  "dependencies": ["axios"],
+  "estimatedGasCost": "0",
+  "tags": ["llm", "ollama", "gemma", "reasoning", "json"],
+  "exampleUsage": {
+    "input": { "prompt": "Analyze ETH market", "outputSchema": { "decision": "string", "confidence": "number" } },
+    "output": { "data": { "decision": "HOLD", "confidence": 0.75 }, "latencyMs": 1200, "retried": false }
+  }
+}

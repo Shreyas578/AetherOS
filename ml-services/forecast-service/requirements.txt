@@ -1,0 +1,9 @@
+fastapi==0.115.0
+uvicorn[standard]==0.30.0
+numpy==2.2.3
+pydantic==2.10.6
+# Prophet stack (optional — service falls back to numpy if these fail)
+# Use Python 3.11 or 3.12 venv; Prophet may not work on Python 3.13
+pandas==2.2.3
+prophet==1.1.6
+cmdstanpy==1.2.5

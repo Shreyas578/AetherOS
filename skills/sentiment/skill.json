@@ -1,0 +1,22 @@
+{
+  "name": "@aetheros/sentiment",
+  "version": "1.0.0",
+  "description": "Analyzes text sentiment using local FinBERT model via FastAPI — returns label, score, confidence with SQLite caching (TTL: 300s)",
+  "author": "AetherOS Team",
+  "inputs": {
+    "text": { "type": "string", "description": "Text to analyze", "required": true }
+  },
+  "outputs": {
+    "label": { "type": "string", "description": "positive | negative | neutral" },
+    "score": { "type": "number", "description": "Confidence score 0-1" },
+    "confidence": { "type": "number", "description": "Model confidence 0-1" },
+    "cached": { "type": "boolean", "description": "Whether result came from cache" }
+  },
+  "dependencies": ["axios", "@aetheros/shared"],
+  "estimatedGasCost": "0",
+  "tags": ["sentiment", "nlp", "finbert", "ml"],
+  "exampleUsage": {
+    "input": { "text": "ETH is pumping hard, massive gains incoming!" },
+    "output": { "label": "positive", "score": 0.94, "confidence": 0.91, "cached": false }
+  }
+}

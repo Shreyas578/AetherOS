@@ -1,0 +1,21 @@
+{
+  "name": "@aetheros/wallet",
+  "version": "1.0.0",
+  "description": "Signs and sends transactions on Pharos testnet with gas estimation, nonce management and exponential backoff retry",
+  "author": "AetherOS Team",
+  "inputs": {
+    "to": { "type": "string", "description": "Recipient address", "required": true },
+    "value": { "type": "string", "description": "Value in wei (optional for contract calls)", "required": false },
+    "data": { "type": "string", "description": "Encoded call data (optional)", "required": false },
+    "privateKey": { "type": "string", "description": "Private key override (defaults to env)", "required": false }
+  },
+  "outputs": {
+    "hash": { "type": "string", "description": "Transaction hash" },
+    "gasUsed": { "type": "string", "description": "Gas consumed" },
+    "retries": { "type": "number", "description": "Number of retry attempts" }
+  },
+  "dependencies": ["ethers"],
+  "estimatedGasCost": "~21000 for PHRS transfer, ~50000-200000 for contract calls",
+  "tags": ["wallet", "transactions", "gas", "signing", "phrs"],
+  "chainCompatibility": ["pharos-testnet"]
+}

@@ -1,0 +1,127 @@
+// This is your Prisma schema file
+// AetherOS — MySQL database schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Agents ─────────────────────────────────────────────────────────────────
+model Agent {
+  id               Int      @id @default(autoincrement())
+  name             String   @unique @db.VarChar(64)
+  type             AgentType
+  wallet_address   String   @unique @db.VarChar(42)
+  wallet_index     Int      @default(0)
+  reputation_score Float    @default(0)
+  budget_phrs      Float    @default(0)         // Native PHRS balance target
+  reputation_nft_token_id  Int?    @unique
+  last_reputation_update   DateTime?
+  reputation_event_count   Int      @default(0)
+  is_active        Boolean  @default(true)
+  created_at       DateTime @default(now())
+  updated_at       DateTime @updatedAt
+
+  events           AgentEvent[]
+  tasks            TaskQueue[]
+
+  @@index([type])
+  @@map("agents")
+}
+
+enum AgentType {
+  TRADING
+  SOCIAL
+  GOVERNANCE
+  BUDGET_ALLOCATOR
+  ATTACKER
+}
+
+// ─── Agent Events ────────────────────────────────────────────────────────────
+model AgentEvent {
+  id                   Int       @id @default(autoincrement())
+  agent_id             Int
+  timestamp            DateTime  @default(now())
+  event_type           String    @db.VarChar(64)
+  inputs_json          Json
+  reasoning_text       String    @db.Text
+  output_json          Json
+  tx_hash              String?   @db.VarChar(66)
+  gas_used             BigInt?
+  cache_hit            Boolean   @default(false)
+  inference_latency_ms Int?
+  retry_count          Int       @default(0)
+  error_message        String?   @db.Text
+  success              Boolean   @default(true)
+
+  agent                Agent     @relation(fields: [agent_id], references: [id])
+
+  @@index([agent_id, timestamp])
+  @@index([event_type])
+  @@index([timestamp])
+  @@map("agent_events")
+}
+
+// ─── Task Queue ──────────────────────────────────────────────────────────────
+model TaskQueue {
+  id           Int         @id @default(autoincrement())
+  agent_id     Int
+  task_type    String      @db.VarChar(64)
+  status       TaskStatus  @default(PENDING)
+  payload_json Json
+  priority     Int         @default(5)
+  created_at   DateTime    @default(now())
+  processed_at DateTime?
+  error        String?     @db.Text
+
+  agent        Agent       @relation(fields: [agent_id], references: [id])
+
+  @@index([status, agent_id])
+  @@index([status, created_at])
+  @@index([agent_id, status])
+  @@map("task_queue")
+}
+
+enum TaskStatus {
+  PENDING
+  PROCESSING
+  DONE
+  FAILED
+}
+
+// ─── Governance Proposals ────────────────────────────────────────────────────
+model Proposal {
+  id                Int      @id @default(autoincrement())
+  proposal_id_onchain String  @unique @db.VarChar(66)
+  title             String   @db.VarChar(256)
+  text              String   @db.Text
+  summary           String?  @db.Text        // gemma-generated summary
+  votes_json        Json                      // {conservative: "yes", growth: "no", security: "yes"}
+  final_vote        String?  @db.VarChar(16) // yes/no/abstain
+  tx_hash           String?  @db.VarChar(66)
+  rationale         String?  @db.Text
+  processed_at      DateTime?
+  created_at        DateTime @default(now())
+
+  @@index([processed_at])
+  @@map("proposals")
+}
+
+// ─── ML Cache Stats ──────────────────────────────────────────────────────────
+model MlCacheStat {
+  id         Int      @id @default(autoincrement())
+  cache_key  String   @unique @db.VarChar(64)
+  service    String   @db.VarChar(32)        // sentiment/forecast/rl
+  hit_count  Int      @default(0)
+  miss_count Int      @default(0)
+  last_used  DateTime @updatedAt
+  ttl_seconds Int
+
+  @@index([service])
+  @@map("ml_cache_stats")
+}

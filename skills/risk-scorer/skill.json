@@ -1,0 +1,26 @@
+{
+  "name": "@aetheros/risk-scorer",
+  "version": "1.0.0",
+  "description": "Computes composite 0-100 risk score for a trade — covers slippage, liquidity depth, position sizing, volatility, sentiment risk and reputation weighting",
+  "author": "AetherOS Team",
+  "inputs": {
+    "currentPriceUsd": { "type": "number", "description": "Current token price in USD", "required": true },
+    "tradeValueUsd": { "type": "number", "description": "Trade value in USD", "required": true },
+    "portfolioValueUsd": { "type": "number", "description": "Total portfolio value in USD", "required": true },
+    "liquidityDepthUsd": { "type": "number", "description": "Pool liquidity depth in USD", "required": false },
+    "priceHistory": { "type": "number[]", "description": "Historical prices (1h intervals, min 24)", "required": true },
+    "sentimentScore": { "type": "number", "description": "Aggregate sentiment -1 to 1", "required": false },
+    "sentimentConfidence": { "type": "number", "description": "Sentiment confidence 0-1", "required": false },
+    "sourceReputationScore": { "type": "number", "description": "Signal source reputation 0-100", "required": false }
+  },
+  "outputs": {
+    "score": { "type": "number", "description": "Risk score 0-100 (lower=safer)" },
+    "grade": { "type": "string", "description": "LOW | MEDIUM | HIGH | CRITICAL" },
+    "approved": { "type": "boolean", "description": "Whether trade passes risk threshold" },
+    "reason": { "type": "string", "description": "Human-readable risk rationale" },
+    "breakdown": { "type": "object", "description": "Per-factor risk scores" }
+  },
+  "dependencies": ["@aetheros/shared"],
+  "estimatedGasCost": "0",
+  "tags": ["risk", "trading", "defi", "safety"]
+}

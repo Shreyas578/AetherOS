@@ -1,0 +1,20 @@
+{
+  "name": "@aetheros/governance",
+  "version": "1.0.0",
+  "description": "Fetches Pharos governance proposals, summarizes long text via Gemma, runs multi-persona voting, and casts on-chain votes",
+  "author": "AetherOS Team",
+  "inputs": {
+    "proposalText": { "type": "string", "description": "Full proposal text", "required": true },
+    "proposalId": { "type": "string", "description": "On-chain proposal ID", "required": false }
+  },
+  "outputs": {
+    "summary": { "type": "string", "description": "Gemma-generated summary for proposals >500 tokens" },
+    "consensus": { "type": "string", "description": "for | against | abstain" },
+    "votes": { "type": "object", "description": "Per-persona votes (conservative, growth, security)" },
+    "txHash": { "type": "string", "description": "On-chain vote transaction hash" }
+  },
+  "dependencies": ["ethers", "@aetheros/llm-reasoning", "@aetheros/wallet", "@prisma/client"],
+  "estimatedGasCost": "~50000-150000 for castVote",
+  "tags": ["governance", "dao", "voting", "llm"],
+  "chainCompatibility": ["pharos-atlantic"]
+}

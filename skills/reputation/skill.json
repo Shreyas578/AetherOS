@@ -1,0 +1,19 @@
+{
+  "name": "@aetheros/reputation",
+  "version": "1.0.0",
+  "description": "Computes off-chain reputation scores from wallet activity and batch-updates soulbound ReputationNFT on Pharos (10 events + 1hr cooldown)",
+  "author": "AetherOS Team",
+  "inputs": {
+    "wallet": { "type": "string", "description": "Agent wallet address", "required": true },
+    "eventsToAdd": { "type": "number", "description": "New events since last on-chain update (min 10)", "required": false }
+  },
+  "outputs": {
+    "score": { "type": "number", "description": "Reputation score 0-100" },
+    "tier": { "type": "string", "description": "UNKNOWN | LOW | MEDIUM | HIGH | TRUSTED" },
+    "txHash": { "type": "string", "description": "On-chain NFT update tx hash" }
+  },
+  "dependencies": ["ethers", "@aetheros/wallet"],
+  "estimatedGasCost": "~80000 for updateDecisionHash",
+  "tags": ["reputation", "nft", "soulbound", "pharos"],
+  "chainCompatibility": ["pharos-atlantic"]
+}

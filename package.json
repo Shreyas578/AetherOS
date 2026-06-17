@@ -1,0 +1,61 @@
+{
+  "name": "aetheros",
+  "version": "1.0.0",
+  "description": "AetherOS — Pharos Skill-to-Agent Dual Cascade AI Agent Ecosystem",
+  "private": true,
+  "workspaces": [
+    "skills/*",
+    "agents/*",
+    "orchestrator",
+    "dashboard",
+    "scripts"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "test:skills": "vitest run --config skills/vitest.config.ts",
+    "test:contracts": "cd contracts && forge test -vvv",
+    "test:adversarial": "ts-node scripts/adversarial-test.ts",
+    "backtest": "ts-node scripts/backtest.ts",
+    "seed": "ts-node scripts/seed.ts",
+    "fund-agents": "ts-node scripts/fund-agents.ts",
+    "db:migrate": "cd db && npx prisma migrate deploy",
+    "db:generate": "cd db && npx prisma generate",
+    "db:studio": "cd db && npx prisma studio",
+    "dev:orchestrator": "ts-node-dev --respawn orchestrator/src/index.ts",
+    "dev:dashboard": "cd dashboard && npm run dev",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^4.0.13",
+    "@nomicfoundation/hardhat-toolbox": "^7.0.0",
+    "@types/node": "^20.0.0",
+    "@vitest/coverage-v8": "^1.6.0",
+    "ethers": "^6.16.0",
+    "hardhat": "^3.9.0",
+    "ts-node": "^10.9.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  },
+  "dependencies": {
+    "@pinata/sdk": "^2.1.0",
+    "@prisma/client": "^5.15.0",
+    "@types/better-sqlite3": "^7.6.0",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "axios": "^1.7.0",
+    "better-sqlite3": "^9.6.0",
+    "cors": "^2.8.5",
+    "cron": "^3.1.7",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.0",
+    "express": "^4.19.0",
+    "prisma": "^5.15.0",
+    "winston": "^3.13.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

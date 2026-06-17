@@ -1,0 +1,21 @@
+{
+  "name": "@aetheros/social",
+  "version": "1.0.0",
+  "description": "Wraps Pharos SocialInteraction contract — post (with Pinata IPFS metadata upload), reply, tip in native PHRS, follow/unfollow",
+  "author": "AetherOS Team",
+  "inputs": {
+    "content": { "type": "string", "description": "Post or reply text content", "required": true },
+    "parentId": { "type": "string", "description": "Parent post ID for replies", "required": false },
+    "postId": { "type": "string", "description": "Post ID for tipping", "required": false },
+    "amountPhrs": { "type": "string", "description": "PHRS tip amount (in ether units)", "required": false },
+    "target": { "type": "string", "description": "Address to follow/unfollow", "required": false }
+  },
+  "outputs": {
+    "postId": { "type": "string", "description": "On-chain post ID" },
+    "txHash": { "type": "string", "description": "Transaction hash" },
+    "ipfsUri": { "type": "string", "description": "Pinata IPFS URI of content" }
+  },
+  "dependencies": ["ethers", "@pinata/sdk", "@aetheros/wallet"],
+  "estimatedGasCost": "~80000 for post, ~60000 for tip",
+  "tags": ["social", "ipfs", "pinata", "phrs", "on-chain"]
+}

@@ -1,0 +1,60 @@
+{
+  "name": "@aetheros/price-oracle",
+  "version": "1.0.0",
+  "description": "Fetches live token prices from CoinGecko API with on-chain DEX pool fallback",
+  "author": "AetherOS Team",
+  "inputs": {
+    "token": {
+      "type": "string",
+      "description": "Token symbol (e.g. ETH, BTC, PHRS)",
+      "required": true
+    },
+    "poolAddress": {
+      "type": "string",
+      "description": "Optional Uniswap-V2-style pool address on Pharos for on-chain fallback",
+      "required": false
+    },
+    "rpcUrl": {
+      "type": "string",
+      "description": "Pharos RPC URL for on-chain fallback",
+      "required": false
+    }
+  },
+  "outputs": {
+    "priceUsd": {
+      "type": "number",
+      "description": "Token price in USD"
+    },
+    "pricePhrs": {
+      "type": "number",
+      "description": "Token price in PHRS"
+    },
+    "source": {
+      "type": "string",
+      "description": "Data source: coingecko | onchain | cached"
+    },
+    "timestamp": {
+      "type": "number",
+      "description": "Unix timestamp of price fetch"
+    },
+    "change24h": {
+      "type": "number",
+      "description": "24-hour price change percentage"
+    }
+  },
+  "dependencies": ["axios", "ethers"],
+  "estimatedGasCost": "0",
+  "tags": ["price", "oracle", "defi", "coingecko"],
+  "chainCompatibility": ["pharos-testnet", "evm-compatible"],
+  "exampleUsage": {
+    "input": { "token": "ETH" },
+    "output": {
+      "token": "ETH",
+      "priceUsd": 3450.12,
+      "pricePhrs": 0,
+      "source": "coingecko",
+      "timestamp": 1718100000000,
+      "change24h": 2.34
+    }
+  }
+}
